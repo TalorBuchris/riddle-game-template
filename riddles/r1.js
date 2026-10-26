@@ -8,6 +8,9 @@
 export default {
     id: 1,
     name: "Easy Math",
-    taskDescription: "What is 78 + 43?",
-    correctAnswer: "121"
+    taskDescription: "What is 5 + 1?",
+    correctAnswer: "6", 
+    difficulty: "easy",
+    timelimit: 5000, 
+    hint: "it's easy"
 };

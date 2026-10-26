@@ -24,7 +24,7 @@ export default class Player {
 
         let avg = this.times.length === 0 ? 0 : sum / this.times.length;
 
-        console.log(`The total time: ${sum/1000}`);
-        console.log(`The average time: ${avg/1000}`);
+        console.log(`The total time: ${Math.floor(sum/1000)}`);
+        console.log(`The average time: ${Math.floor(avg/1000)}`);
     }
 }

@@ -7,7 +7,10 @@
 
 export default {
     id: 4,
-    name: "Medium Math",
-    taskDescription: "What is 13 * 16?",
-    correctAnswer: "208"
+    name: "Easy Math",
+    taskDescription: "What is 7 + 5?",
+    correctAnswer: "12", 
+    difficulty: "medium",
+    timelimit: 5000, 
+    hint: "it's easy"
 };

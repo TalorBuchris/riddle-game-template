@@ -16,17 +16,49 @@ const prompt = PromptSync();
 
 import Player from "./classes/Player.js";
 import Riddle from "./classes/Riddle.js";
-import riddles from "./riddles/index.js"
+import riddles from "./riddles/index.js";
 
 console.log("Welcome to the riddle game");
 const name = prompt("What is your name? ");
 const player = new Player(name);
 
-riddles.forEach((item) => {
+const level = prompt("Choose difficulty: easy / medium / hard: ");
+
+let riddleFilter = riddles.filter((item) => {
+    return item.difficulty === level;
+});
+
+// Shuffle riddles using Fisher-Yates
+for (let i = riddleFilter.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [riddleFilter[i], riddleFilter[j]] = [riddleFilter[j], riddleFilter[i]];
+}
+
+console.log(`To get a hint, type "hint", but 10 seconds will be added to your time.`);
+
+riddleFilter.forEach((item) => {
     let start = Date.now();
-    let riddle = new Riddle(item.id, item.name, item.taskDescription, item.correctAnswer);
-    riddle.ask(prompt);
+
+    let riddle = new Riddle(
+        item.id,
+        item.name,
+        item.taskDescription,
+        item.correctAnswer,
+        item.difficulty,
+        item.timelimit,
+        item.hint
+    );
+
+    let penalty = riddle.ask(prompt);
+
     let end = Date.now();
+
     player.recordTime(start, end);
-})
+
+    if (player.times[player.times.length - 1] > item.timelimit) {
+        console.log(`TOO SLOW! 5 seconds penalty applied.`);
+        player.times[player.times.length - 1] += (5000 + penalty);
+    }
+});
+
 player.showStats();

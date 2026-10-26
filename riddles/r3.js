@@ -8,7 +8,10 @@
 
 export default {
     id: 3,
-    name: "Medium Math",
-    taskDescription: "What is 12 * 15?",
-    correctAnswer: "180"
+    name: "Easy Math",
+    taskDescription: "What is 5 + 8?",
+    correctAnswer: "13", 
+    difficulty: "medium",
+    timelimit: 5000, 
+    hint: "it's easy"
 };

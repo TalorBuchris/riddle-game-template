@@ -7,7 +7,10 @@
 
 export default {
     id: 5,
-    name: "Hard Math",
-    taskDescription: "What is 22 * 36?",
-    correctAnswer: "792"
+    name: "Easy Math",
+    taskDescription: "What is 36 + 10?",
+    correctAnswer: "46", 
+    difficulty: "hard", 
+    timelimit: 5000, 
+    hint: "it's easy"
 };
