@@ -14,13 +14,13 @@
 
 export default class Riddle {
     constructor(id, name, taskDescription, correctAnswer, difficulty, timeLimit, hint) {
-        this.id = id;
         this.name = name;
         this.taskDescription = taskDescription;
         this.correctAnswer = correctAnswer;
         this.difficulty = difficulty;
         this.timeLimit = timeLimit;
         this.hint = hint;
+        this.id = id;
     }
     ask(prompt) {
         console.log(`Riddle #${this.id} Name: ${this.name}`);

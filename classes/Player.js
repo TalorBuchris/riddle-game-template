@@ -11,7 +11,7 @@
 //   - show the total time and the average time per riddle
 
 export default class Player {
-    constructor(name, times) {
+    constructor(name) {
         this.name = name;
         this.times = [];
     }
@@ -23,8 +23,7 @@ export default class Player {
         this.times.forEach(time => sum += time);
 
         let avg = this.times.length === 0 ? 0 : sum / this.times.length;
-
-        console.log(`The total time: ${Math.floor(sum/1000)}`);
-        console.log(`The average time: ${Math.floor(avg/1000)}`);
+        
+        return {total: Math.floor(sum/1000), avg: Math.floor(avg/1000)}
     }
 }

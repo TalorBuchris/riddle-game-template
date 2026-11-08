@@ -1,0 +1,97 @@
+{
+  "riddles": [
+    {
+      "name": "Easy Math",
+      "taskDescription": "What is 5 + 1?",
+      "correctAnswer": "6",
+      "difficulty": "easy",
+      "timelimit": 5000,
+      "hint": "it's easy",
+      "id": 1
+    },
+    {
+      "name": "Easy Math",
+      "taskDescription": "What is 4 + 3?",
+      "correctAnswer": "7",
+      "difficulty": "easy",
+      "timelimit": 5000,
+      "hint": "it's easy",
+      "id": 2
+    },
+    {
+      "name": "Easy Math",
+      "taskDescription": "What is 5 + 8?",
+      "correctAnswer": "13",
+      "difficulty": "medium",
+      "timelimit": 5000,
+      "hint": "it's easy",
+      "id": 3
+    },
+    {
+      "name": "Easy Math",
+      "taskDescription": "What is 7 + 5?",
+      "correctAnswer": "12",
+      "difficulty": "medium",
+      "timelimit": 5000,
+      "hint": "it's easy",
+      "id": 4
+    },
+    {
+      "name": "Easy Math",
+      "taskDescription": "What is 12 + 13?",
+      "correctAnswer": "25",
+      "difficulty": "hard",
+      "timelimit": 6000,
+      "hint": "(10 + 10) + (2 + 3)",
+      "id": 6
+    },
+    {
+      "name": "Easy Math",
+      "taskDescription": "What is 12 + 13?",
+      "correctAnswer": "25",
+      "difficulty": "hard",
+      "timelimit": 6000,
+      "hint": "(10 + 10) + (2 + 3)",
+      "id": 8
+    },
+    {
+      "name": "Easy Math",
+      "taskDescription": "What is 11 + 13?",
+      "correctAnswer": "24",
+      "difficulty": "hard",
+      "timelimit": 9000,
+      "hint": "(10 + 10) + (1 + 3)",
+      "id": 9
+    },
+    {
+      "name": "Easy Math",
+      "taskDescription": "What is 14 + 9",
+      "correctAnswer": "25",
+      "difficulty": "easy",
+      "timelimit": 7000,
+      "hint": "it's easy",
+      "id": 10
+    },
+    {
+      "name": "Easy Math",
+      "taskDescription": "3 + 5",
+      "correctAnswer": "8",
+      "difficulty": "easy",
+      "timelimit": 3,
+      "hint": "Try using your fingers.",
+      "id": 11
+    }
+  ],
+  "players": [
+    {
+      "name": "Yishai",
+      "lowestTime": 72,
+      "id": 1
+    },
+    {
+      "name": "Sarah",
+      "lowestTime": 65,
+      "id": 2
+    }
+  ]
+}
