@@ -11,7 +11,7 @@ export async function getAllPlayers() {
     }
     catch (error) {
         console.error("Error fetching players:", error);
-        return [];
+        throw error;
     }
 }
 

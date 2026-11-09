@@ -1,40 +1,40 @@
 {
   "riddles": [
     {
+      "id": 1,
       "name": "Easy Math",
       "taskDescription": "What is 5 + 1?",
       "correctAnswer": "6",
       "difficulty": "easy",
       "timelimit": 5000,
-      "hint": "it's easy",
-      "id": 1
+      "hint": "it's easy"
     },
     {
+      "id": 2,
       "name": "Easy Math",
       "taskDescription": "What is 4 + 3?",
       "correctAnswer": "7",
       "difficulty": "easy",
       "timelimit": 5000,
-      "hint": "it's easy",
-      "id": 2
+      "hint": "it's easy"
     },
     {
+      "id": 3,
       "name": "Easy Math",
       "taskDescription": "What is 5 + 8?",
       "correctAnswer": "13",
       "difficulty": "medium",
       "timelimit": 5000,
-      "hint": "it's easy",
-      "id": 3
+      "hint": "it's easy"
     },
     {
+      "id": 4,
       "name": "Easy Math",
       "taskDescription": "What is 7 + 5?",
       "correctAnswer": "12",
       "difficulty": "medium",
       "timelimit": 5000,
-      "hint": "it's easy",
-      "id": 4
+      "hint": "it's easy"
     },
     {
       "name": "Easy Math",
@@ -84,14 +84,24 @@
   ],
   "players": [
     {
+      "id": 1,
       "name": "Yishai",
-      "lowestTime": 72,
-      "id": 1
+      "lowestTime": 72
     },
     {
+      "id": 2,
       "name": "Sarah",
-      "lowestTime": 65,
-      "id": 2
+      "lowestTime": 65
+    },
+    {
+      "name": "talor",
+      "lowestTime": null,
+      "id": 3
+    },
+    {
+      "name": "fghj",
+      "lowestTime": null,
+      "id": 4
     }
   ]
 }

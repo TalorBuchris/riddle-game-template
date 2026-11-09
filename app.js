@@ -17,7 +17,7 @@ const prompt = PromptSync();
 import Player from "./classes/Player.js";
 import Riddle from "./classes/Riddle.js";
 import { getAllRiddles, createRiddle, updateRiddle, deleteRiddle } from "./api/riddlesApi.js";
-import { createPlayer, findPlayerByName, updatePlayer } from "./api/playersApi.js";
+import { createPlayer, findPlayerByName, getAllPlayers, updatePlayer } from "./api/playersApi.js";
 
 let riddle = {
     "name": "Easy Math",
@@ -70,7 +70,7 @@ do {
             break;
 
         case "6":
-            // הצגת טבלת המובילים();
+            await viewLeaderboard();
             break;
 
         default:
@@ -129,6 +129,24 @@ async function handleUpdateRiddle() {
     }
     catch (error) {
         console.log("Failed to update the riddle.");
+    }
+}
+
+// טבלת מובילים
+async function viewLeaderboard() {
+    try {
+        let players = await getAllPlayers();
+        if (players.length === 0) {
+            console.log("The leaderboard is empty.");
+            return;
+        }
+        players = players
+            .filter(player => player.lowestTime !== null)
+            .sort((a, b) => a.lowestTime - b.lowestTime);
+        console.log(players);
+    }
+    catch (error) {
+        console.log("Failed to load the leaderboard.");
     }
 }
 
