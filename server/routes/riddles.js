@@ -45,10 +45,10 @@ riddlesRouter.post('/', async (req, res) => {
             const IDs = data.riddles.map(item => {
                 return item.id;
             });
-            maxId = Math.max(...IDs);
+            maxId = Math.max(...IDs) + 1;
         }
         const newRiddle = { ...req.body }
-        newRiddle.id = maxId + 1;
+        newRiddle.id = maxId;
         data.riddles.push(newRiddle);
         await writeDb(data);
         res.status(201).json(newRiddle);
