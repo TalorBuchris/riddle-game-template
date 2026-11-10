@@ -66,7 +66,7 @@
     {
       "name": "Easy Math",
       "taskDescription": "What is 14 + 9",
-      "correctAnswer": "25",
+      "correctAnswer": "23",
       "difficulty": "easy",
       "timelimit": 7000,
       "hint": "it's easy",
@@ -84,18 +84,18 @@
   ],
   "players": [
     {
-      "id": 1,
       "name": "Yishai",
-      "lowestTime": 72
+      "lowestTime": 72,
+      "id": 1
     },
     {
-      "id": 2,
       "name": "Sarah",
-      "lowestTime": 65
+      "lowestTime": 65,
+      "id": 2
     },
     {
       "name": "talor",
-      "lowestTime": null,
+      "lowestTime": 48,
       "id": 3
     },
     {

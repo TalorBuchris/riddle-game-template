@@ -1,5 +1,5 @@
 import express from 'express';
-import { readDb, writeDb } from '../db/dbHelpers';
+import { readDb, writeDb } from '../db/dbHelpers.js';
 
 const playersRouter = express.Router();
 

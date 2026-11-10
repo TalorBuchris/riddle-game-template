@@ -230,7 +230,7 @@ async function playGame() {
                 await updatePlayer(player);
 
                 console.log(`🏆 Congratulations ${playerClass.name}!
-                NEW RECORD! Your new best time is ${total} seconds!
+                    NEW RECORD! Your new best time is ${total} seconds!
                 You have a new personal record! 🎉`);
             }
             catch (error) {

@@ -1,6 +1,7 @@
+const url = "http://localhost:3000/api/riddles/";
+
 // שליפת כל החידות
 export async function getAllRiddles() {
-    const url = "http://localhost:3000/riddles/";
     try {
         const res = await fetch(url);
         if (!res.ok)
@@ -17,7 +18,6 @@ export async function getAllRiddles() {
 
 // יצירת חידה חדשה
 export async function createRiddle(riddle) {
-    const url = "http://localhost:3000/riddles";
     try {
         const res = await fetch(url, {
             method: "POST",
@@ -40,9 +40,8 @@ export async function createRiddle(riddle) {
 
 // עדכון חידה
 export async function updateRiddle(id, riddle) {
-    const url = "http://localhost:3000/riddles/" + id;
     try {
-        const res = await fetch(url, {
+        const res = await fetch(url + id, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"
@@ -63,9 +62,8 @@ export async function updateRiddle(id, riddle) {
 
 // מחיקת חידה
 export async function deleteRiddle(id) {
- const url = "http://localhost:3000/riddles/" + id;
     try {
-        const res = await fetch(url, {
+        const res = await fetch(url + id, {
             method: "DELETE",
         });
         if (!res.ok)

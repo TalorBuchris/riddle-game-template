@@ -1,6 +1,7 @@
+const url = "http://localhost:3000/api/players/";
+
 // שליפת כל השחקנים
 export async function getAllPlayers() {
-    const url = "http://localhost:3000/players/";
     try {
         const res = await fetch(url);
         if (!res.ok)
@@ -17,7 +18,6 @@ export async function getAllPlayers() {
 
 // יצירת שחקן חדש
 export async function createPlayer(name) {
-    const url = "http://localhost:3000/players";
     try {
         const res = await fetch(url, {
             method: "POST",
@@ -40,9 +40,8 @@ export async function createPlayer(name) {
 
 // עדכון זמן השיא של השחקן
 export async function updatePlayer(player) {
-    const url = "http://localhost:3000/players/" + player.id;
     try {
-        const res = await fetch(url, {
+        const res = await fetch(url + player.id, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"
