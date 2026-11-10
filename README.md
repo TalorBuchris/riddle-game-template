@@ -1,335 +1,422 @@
-# Riddle Game - JavaScript Terminal Project
+# חלק 3: שדרוג השרת (Refactor) באמצעות Express
 
-A terminal game that asks the player riddles, measures how long each riddle took, and shows statistics at the end.
+עד עכשיו השתמשנו ב־`json-server` בתור שרת מסד הנתונים שלנו. בחלק 3 נכתוב
+**שרת משלנו באמצעות Express**, ונפסיק להשתמש ב־`json-server`.
 
-This repository is a **template**. The folders and files are ready, and every file has a comment that describes what should be written in it. Write all the code yourself.
+המשחק שרץ בטרמינל יהפוך ל־**Client (לקוח)**: הוא יציג את התפריט, יבקש
+מהמשתמש להזין נתונים וישלח בקשות HTTP באמצעות `fetch`, בדיוק כמו שעשינו
+בחלק 2.
 
-## Getting started
+ה־**Server (שרת)** יקבל את הבקשות, יקרא ויעדכן את קובץ מסד הנתונים וישלח
+בחזרה תשובות בפורמט JSON.
 
-1. Clone this repository.
-2. Run `npm install` (this installs `prompt-sync`).
-3. Fill in each file according to the comment inside it.
-4. Run the game with `node app.js` directly in the terminal (not through a piped command).
+מסד הנתונים נשאר בדיוק אותו מסד נתונים מחלק 2 -- קובץ `db.json`, שמכיל
+את המערכים `riddles` ו־`players`. השינוי היחיד הוא בשרת שאחראי לקרוא
+ולכתוב לקובץ.
 
-## Folder structure
+## מבנה התקשורת החדש
 
-```
-riddle-game/
-├── app.js
-├── package.json
-├── riddles/
-│   ├── index.js
-│   ├── r1.js
-│   ├── r2.js
-│   ├── r3.js
-│   ├── r4.js
-│   └── r5.js
-└── classes/
-    ├── Riddle.js
-    └── Player.js
-```
-
-## Tasks
-
-### Riddle files
-
-**Task 1: Create the riddles** (`riddles/r1.js` to `riddles/r5.js`)
-
-- Each file exports a riddle object with `id`, `name`, `taskDescription` and `correctAnswer`.
-- Example:
-
-```js
-// riddles/r1.js
-export default {
-  id: 1,
-  name: "Easy Math",
-  taskDescription: "What is 5 + 3?",
-  correctAnswer: "8"
-};
+``` text
+Client (app.js)
+       |
+       | fetch
+       v
+Express Server (server.js)
+       |
+       v
+Routes (riddles.js / players.js)
+       |
+       v
+Read / Write db.json
+       |
+       v
+JSON Response חוזר ללקוח
 ```
 
-- Write 5 riddles of your own.
+------------------------------------------------------------------------
 
-**Task 2: Load all riddles at once** (`riddles/index.js`)
+# התחלה -- חלק 3 (Getting Started)
 
-- Import all five riddles and export them together as one array.
+## שלב 1: הסרת json-server
 
-### Classes
+עצרו את `json-server` באמצעות `Ctrl + C` בטרמינל שבו הוא פועל.
 
-**Task 3: The Riddle class** (`classes/Riddle.js`)
+לאחר מכן הסירו אותו מהפרויקט באמצעות הפקודה:
 
-- Properties: `id`, `name`, `taskDescription`, `correctAnswer`.
-- Method `ask(prompt)`:
-  - Show the riddle.
-  - Ask for user input.
-  - Keep asking until the correct answer is given.
-
-**Task 4: The Player class** (`classes/Player.js`)
-
-- Properties: `name`, `times[]` (array of time durations per riddle).
-- Methods:
-  - `recordTime(start, end)`
-  - `showStats()` - show total and average time.
-
-### Game logic (`app.js`)
-
-**Task 5: Set up terminal input**
-
-- Install `prompt-sync` (already listed in `package.json`, so `npm install` is enough).
-- Set it up:
-
-```js
-import PromptSync from 'prompt-sync';
-const prompt = PromptSync();
+``` bash
+npm uninstall json-server
 ```
 
-**Task 6: Ask for the player name**
+## שלב 2: התקנת Express
 
-- Show a welcome message.
-- Use `prompt` to ask: "What is your name?"
-- Create a `Player` object with the name.
+התקינו את Express באמצעות הפקודה:
 
-**Task 7: Use all the riddles**
-
-- In `app.js`, import the array from `riddles/index.js`.
-
-**Task 8: Main game loop**
-
-- Loop through all riddles:
-  - Record `startTime` with `Date.now()`.
-  - Create a `Riddle` object and call `ask()`.
-  - Record `endTime`.
-  - Save the time using `player.recordTime()`.
-
-**Task 9: Show final stats**
-
-- After all riddles:
-  - Show total time.
-  - Show average time per riddle.
-
-### Bonus (optional)
-
-**Task 10: Multiple choice riddles**
-
-- Create a `MultipleChoiceRiddle` class that inherits from `Riddle`.
-- Add a `choices[]` property.
-- Show numbered options.
-- Accept numeric input and compare it to the correct answer.
-- Create the file `classes/MultipleChoiceRiddle.js` yourself.
-
-## Final deliverables
-
-- Project folders and files ready.
-- 5 riddles defined.
-- Working `Riddle` and `Player` classes.
-- `app.js` runs the full game.
-- Terminal input with `prompt-sync`.
-- Time tracking for each riddle.
-- Final stats display.
-- Optional: multiple choice riddles.
-
----
-
-# Part 2: Database & New Features
-
-We are improving the Riddle Game: the riddles and the players will be saved in a database, and the game gets a main menu, CRUD options for riddles, a "time to beat" and a leaderboard.
-
-The database is a local server called **json-server**. It reads one file, `db.json`, and turns every array in it into an API address. Your code talks to it **only with `fetch`**, exactly like any other API (GET, POST, PUT, DELETE).
-
-## Getting started (Part 2)
-
-1. Install json-server (once):
-
-```
-npm install json-server@0.17.4
+``` bash
+npm install express
 ```
 
-2. Add a script to `package.json`:
+## שלב 3: שינוי קובץ package.json
 
-```json
+שנו את ה־`scripts` בקובץ `package.json` כך:
+
+``` json
 "scripts": {
-  "server": "json-server --watch db.json --port 3000"
+  "server": "node server/server.js",
+  "start": "node client/app.js"
 }
 ```
 
-3. Open **two terminals**:
-   - Terminal 1: `npm run server` (keep it open, this is the database).
-   - Terminal 2: `node app.js` (the game).
+## שלב 4: פתיחת שני טרמינלים
 
-4. Check that the server works: open http://localhost:3000/riddles in the browser. You should see your riddles as JSON.
+כמו בחלק 2, יש לפתוח שני טרמינלים:
 
-## New folder structure
+-   **טרמינל 1:** הפעילו את השרת באמצעות `npm run server`. השאירו את
+    הטרמינל פתוח -- זהו השרת שלכם.
+-   **טרמינל 2:** הפעילו את המשחק באמצעות `npm start`.
 
-```
+## שלב 5: בדיקה שהשרת עובד
+
+פתחו את הכתובת הבאה בדפדפן:
+
+<http://localhost:3000/api/riddles>
+
+אם הכול עובד כמו שצריך, אתם אמורים לראות את החידות שלכם בפורמט JSON.
+
+------------------------------------------------------------------------
+
+# מבנה התיקיות החדש (New Folder Structure)
+
+יש להעביר את הקבצים לשתי תיקיות מרכזיות: `client` ו־`server`.
+
+שימו לב: מבנה התיקיות הזה אינו חובה, אבל המשימות בהמשך מתבססות עליו.
+
+``` text
 riddle-game/
-├── app.js
-├── db.json            <- new: the database
+│
 ├── package.json
-├── api/               <- new: all the fetch calls
-│   ├── riddlesApi.js
-│   └── playersApi.js
-└── classes/
-    ├── Riddle.js
-    └── Player.js
+│
+├── client/
+│   ├── app.js
+│   │
+│   ├── api/
+│   │   ├── riddlesApi.js
+│   │   └── playersApi.js
+│   │
+│   └── classes/
+│       ├── Riddle.js
+│       └── Player.js
+│
+└── server/
+    ├── server.js
+    │
+    ├── routes/
+    │   ├── riddles.js
+    │   └── players.js
+    │
+    └── db/
+        ├── db.json
+        └── dbHelpers.js
 ```
 
-The `riddles/` folder is not needed anymore. The riddles now live in `db.json`.
+### הסבר על התיקיות והקבצים
 
-## The API
+-   `client/` -- מכילה את כל הקבצים של המשחק, כלומר צד הלקוח.
+-   `app.js` -- מציג את התפריט בטרמינל ושולח בקשות HTTP לשרת.
+-   `api/` -- מכילה את הקבצים שאחראים לשליחת הבקשות לשרת.
+-   `classes/` -- מכילה את המחלקות `Riddle` ו־`Player`.
+-   `server/` -- מכילה את כל הקבצים של צד השרת.
+-   `server.js` -- הקובץ הראשי שמפעיל את שרת Express.
+-   `routes/` -- מכילה את הנתיבים (Routes) של החידות והשחקנים.
+-   `db/` -- מכילה את מסד הנתונים ואת הפונקציות לקריאה ולכתיבה שלו.
+-   `db.json` -- קובץ מסד הנתונים שהעברנו מחלק 2, ובו המערכים `riddles`
+    ו־`players`.
 
-json-server gives you these addresses automatically:
+**חשוב:** העבירו את `app.js`, את תיקיית `api/` ואת תיקיית `classes/` יחד
+לתוך `client/`, כדי שהנתיבים של ה־`imports` בתוך הקבצים ימשיכו לעבוד.
 
-| Method | Address | What it does |
-| --- | --- | --- |
-| GET | `/riddles` | Get all riddles |
-| GET | `/riddles/1` | Get the riddle with id 1 |
-| POST | `/riddles` | Add a new riddle (json-server creates the `id` by itself) |
-| PUT | `/riddles/1` | Replace the riddle with id 1 |
-| DELETE | `/riddles/1` | Delete the riddle with id 1 |
-| GET | `/players?name=Yishai` | Find players by name (returns an array) |
+------------------------------------------------------------------------
 
-The same addresses exist for `/players`.
+# ממשק השרת (Server API)
 
-Remember:
-- `fetch` returns a Promise. Use `async` / `await` (or `.then()`).
-- Check `res.ok`. `fetch` does not throw an error on 404 or 500.
-- For POST and PUT send `headers: { "Content-Type": "application/json" }` and `body: JSON.stringify(...)`.
-- Use `try` / `catch`, so the game shows a clear message if the server is not running.
-- `app.js` is an ES module, so you can use `await` directly at the top level of the file.
+השרת שלכם צריך לדעת לקבל את הבקשות הבאות. כל הכתובות מתחילות בקידומת
+`/api`.
 
-## Tasks
+  ----------------------------------------------------------------------------
+  Method                  Endpoint                     תיאור
+  ----------------------- ---------------------------- -----------------------
+  GET                     `/api/riddles`               קבלת כל החידות
 
-**Task 11: Riddle database** (`db.json`)
+  GET                     `/api/riddles/:id`           קבלת חידה לפי מזהה
+                                                       (ID). אם החידה לא
+                                                       קיימת, יש להחזיר 404
 
-- Move all your riddles from `r1.js` ... `r5.js` into one file, as an array of objects.
-- Example:
+  POST                    `/api/riddles`               הוספת חידה חדשה (השרת
+                                                       יוצר עבורה ID)
 
-```json
-{
-  "riddles": [
+  PUT                     `/api/riddles/:id`           עדכון חידה לפי ID. אם
+                                                       היא לא קיימת, יש להחזיר
+                                                       404
+
+  DELETE                  `/api/riddles/:id`           מחיקת חידה לפי ID. אם
+                                                       היא לא קיימת, יש להחזיר
+                                                       404
+
+  GET                     `/api/players`               קבלת כל השחקנים
+
+  GET                     `/api/players?name=Yishai`   חיפוש שחקנים לפי שם
+                                                       (מחזיר מערך)
+
+  POST                    `/api/players`               הוספת שחקן חדש עם
+                                                       `lowestTime: null`
+
+  PUT                     `/api/players/:id`           עדכון זמן השיא של השחקן
+  ----------------------------------------------------------------------------
+
+אלו אותן בקשות שבהן השתמשנו בחלק 2, כאשר `json-server` טיפל בהן. ההבדל
+הוא שכעת הוספנו את `/api` בתחילת כל כתובת. לכן, כמעט שלא נצטרך לשנות את
+הקוד בצד הלקוח.
+
+------------------------------------------------------------------------
+
+# המשימות (Tasks)
+
+## צד השרת (Server Side)
+
+### משימה 19: יצירת אפליקציית Express
+
+**קובץ:** `server/server.js`
+
+יש לבצע את הפעולות הבאות:
+
+1.  ליצור את אפליקציית השרת באמצעות `express()`.
+
+2.  להוסיף את השורה הבאה:
+
+    ``` javascript
+    app.use(express.json());
+    ```
+
+    השורה הזאת מאפשרת לשרת לקרוא את גוף הבקשה (JSON Body) בבקשות מסוג
+    `POST` ו־`PUT`.
+
+3.  לחבר את ה־Routers:
+
+    -   הנתיב `/api/riddles` יחובר לקובץ `routes/riddles.js`.
+    -   הנתיב `/api/players` יחובר לקובץ `routes/players.js`.
+
+4.  להפעיל את השרת על פורט `3000`.
+
+5.  להדפיס למסך את ההודעה הבאה כשהשרת עולה:
+
+    ``` text
+    Server is running on http://localhost:3000
+    ```
+
+### משימה 20: קריאה וכתיבה למסד הנתונים
+
+**קובץ:** `server/db/dbHelpers.js`
+
+יש לכתוב ולייצא שתי פונקציות אסינכרוניות (`async`) באמצעות
+`fs.promises`.
+
+יש להשתמש בייבוא הבא:
+
+``` javascript
+import fs from 'fs/promises';
+```
+
+**פונקציה ראשונה -- `readDb()`**
+
+-   קוראת את קובץ `db.json`.
+-   מפענחת את תוכן הקובץ באמצעות `JSON.parse`.
+-   מחזירה את האובייקט שהתקבל.
+
+**פונקציה שנייה -- `writeDb(db)`**
+
+-   מקבלת אובייקט בשם `db`.
+
+-   שומרת אותו בחזרה בקובץ `db.json`.
+
+-   משתמשת ב־`JSON.stringify` עם הפרמטרים הבאים:
+
+    ``` javascript
+    JSON.stringify(db, null, 2)
+    ```
+
+**חשוב:** בכל פעולה ב־Routes יש לקרוא את כל הקובץ, לשנות את המערך המתאים
+(`db.riddles` או `db.players`) ולכתוב את כל הקובץ מחדש.
+
+### משימה 21: יצירת Routes עבור חידות (Riddles)
+
+**קובץ:** `server/routes/riddles.js`
+
+יש לבצע את הפעולות הבאות:
+
+1.  ליצור Router באמצעות `express.Router()`.
+2.  לייצא את ה־Router כדי שניתן יהיה להשתמש בו בקובץ השרת הראשי.
+3.  ליצור Route עבור כל אחת מפעולות החידות שמופיעות בטבלת ה־API למעלה.
+4.  שימו לב: `req.params.id` מתקבל כמחרוזת (String), ולכן יש להמיר אותו
+    למספר באמצעות `Number()` לפני שמשווים אותו ל־`id` שנמצא במסד
+    הנתונים.
+
+**הנחיות מיוחדות לפי סוג הבקשה:**
+
+-   **POST:**
+    -   יש ליצור ID חדש לחידה.
+    -   ה־ID החדש יהיה ה־ID הגדול ביותר במערך ועוד 1.
+    -   יש להחזיר Status Code מסוג `201` יחד עם החידה החדשה.
+-   **PUT ו־DELETE:**
+    -   אם לא קיימת חידה עם ה־ID שהתקבל, יש להחזיר Status Code מסוג
+        `404`.
+    -   בנוסף, יש להחזיר את הודעת השגיאה הבאה:
+
+    ``` json
     {
-      "id": 1,
-      "name": "Easy Math",
-      "taskDescription": "What is 5 + 3?",
-      "correctAnswer": "8"
-    },
-    {
-      "id": 2,
-      "name": "Riddle of Sound",
-      "taskDescription": "I speak without a mouth. What am I?",
-      "correctAnswer": "echo"
+      "error": "Riddle not found"
     }
-  ],
-  "players": []
+    ```
+
+### משימה 22: יצירת Routes עבור שחקנים (Players)
+
+**קובץ:** `server/routes/players.js`
+
+יש לבצע את הפעולות הבאות:
+
+1.  ליצור Router באמצעות `express.Router()`.
+2.  לייצא את ה־Router.
+3.  לממש את הפעולות הבאות:
+
+**GET `/` -- קבלת שחקנים**
+
+-   אם התקבל פרמטר `name` בתוך ה־Query, באמצעות `req.query.name`, יש
+    להחזיר רק את השחקנים ששמם תואם לשם שהתקבל.
+-   אם לא התקבל פרמטר `name`, יש להחזיר את כל השחקנים.
+
+**POST `/` -- הוספת שחקן**
+
+יש להוסיף שחקן חדש עם המבנה הבא:
+
+``` javascript
+{
+  id,
+  name,
+  lowestTime: null
 }
 ```
 
-- `db.json` must be valid JSON (double quotes, no comma after the last item).
-- Delete the `riddles/` folder and load the riddles from the server instead.
+לאחר ההוספה יש להחזיר:
 
-**Task 12: Riddles API** (`api/riddlesApi.js`)
+-   Status Code מסוג `201`.
+-   את אובייקט השחקן החדש.
 
-- Write and export an `async` function for every action:
-  - `getAllRiddles()`
-  - `createRiddle(riddle)`
-  - `updateRiddle(id, riddle)`
-  - `deleteRiddle(id)`
-- Each function uses `fetch` with the right method and returns the data from the server.
+**PUT `/:id` -- עדכון שחקן**
 
-**Task 13: Main menu** (`app.js`)
+-   יש לשמור את זמן השיא החדש של השחקן (`lowestTime`).
+-   אם השחקן לא קיים במסד הנתונים, יש להחזיר Status Code מסוג `404`.
 
-- Show a menu and keep showing it until the player chooses to exit:
+------------------------------------------------------------------------
 
-```
-What do you want to do?
-1. Play the game
-2. Create a new riddle
-3. Read all riddles
-4. Update an existing riddle
-5. Delete a riddle
-6. View leaderboard
-0. Exit
-```
+## צד הלקוח (Client Side)
 
-**Task 14: Riddle CRUD options**
+### משימה 23: חיבור צד הלקוח לשרת החדש
 
-| Option | Description |
-| --- | --- |
-| Create | Ask for name, description and answer, and add the new riddle to the DB |
-| Read | Show all riddles in the DB |
-| Update | Ask for an ID and change the details of that riddle |
-| Delete | Ask for an ID and remove that riddle |
+**קבצים:** `client/api/riddlesApi.js`, `client/api/playersApi.js`
 
-- Example - creating a new riddle:
+יש לעדכן את כתובות השרת בקבצים.
 
-```
-Enter riddle name: Hard Math
-Enter description: What is 12 x 12?
-Enter correct answer: 144
-Riddle saved!
+**שינוי כתובות החידות:**
+
+במקום:
+
+``` text
+http://localhost:3000/riddles
 ```
 
-**Task 15: Player database** (`db.json` + `api/playersApi.js`)
+יש להשתמש בכתובת:
 
-- The `players` array in `db.json` keeps every player and their best time (in seconds):
-
-```json
-"players": [
-  { "id": 1, "name": "Yishai", "lowestTime": 72 },
-  { "id": 2, "name": "Sarah", "lowestTime": 65 }
-]
+``` text
+http://localhost:3000/api/riddles
 ```
 
-- In `api/playersApi.js` write and export:
-  - `findPlayerByName(name)` - returns the player, or `undefined` if there is no such player
-  - `createPlayer(name)` - adds a new player with `lowestTime: null`
-  - `updatePlayer(player)` - saves the player's new `lowestTime`
-  - `getAllPlayers()`
+**שינוי כתובות השחקנים:**
 
-**Task 16: Show "Time to Beat"**
+במקום:
 
-- When a player starts a game:
-  - Check if they already exist in the players DB.
-  - If they do and they have a time, show:
-
-```
-Hi Yishai! Your previous lowest time was 72 seconds.
+``` text
+http://localhost:3000/players
 ```
 
-  - If not, add them to the DB with no `lowestTime` yet (`null`).
+יש להשתמש בכתובת:
 
-**Task 17: Update player time**
-
-- After finishing the game:
-  - If the player has no recorded time, save their time.
-  - If their current time is lower than their saved `lowestTime`, update it.
-- Example:
-
-```
-Great job, Yishai!
-Your time: 68 seconds
-New record! Time updated.
+``` text
+http://localhost:3000/api/players
 ```
 
-**Task 18: Leaderboard** (menu option 6)
+**חשוב:** שאר הקוד בצד הלקוח נשאר ללא שינוי:
 
-- Load all players from the DB.
-- Skip players who never finished a game (`lowestTime` is `null`).
-- Sort by `lowestTime` ascending (fastest first).
-- Show the results:
+-   התפריט.
+-   המשחק עצמו.
+-   קריאות `fetch`.
+-   בדיקות `res.ok` כדי לוודא שהבקשות הצליחו.
 
-```
-🏆 Leaderboard:
-1. Sarah - 65 seconds
-2. Yishai - 68 seconds
-```
+לאחר השינוי, יש לבדוק מחדש את כל האפשרויות בתפריט:
 
-## Part 2 deliverables
+1.  משחק (Play).
+2.  יצירת חידה (Create).
+3.  הצגת חידות (Read).
+4.  עדכון חידה (Update).
+5.  מחיקת חידה (Delete).
+6.  טבלת המובילים (Leaderboard).
 
-- All riddles in one database file (`db.json`), served by json-server.
-- All database actions done with `fetch` from the `api/` folder.
-- A main menu with CRUD options for riddles.
-- A player database.
-- "Time to beat" shown before playing.
-- The player's best time updated after playing.
-- A leaderboard sorted by best time.
+------------------------------------------------------------------------
+
+# בונוס (אופציונלי)
+
+### משימה 24: הוספת ולידציה (Validation) בצד השרת
+
+יש להוסיף בדיקות תקינות לנתונים שמתקבלים בשרת.
+
+**POST ו־PUT `/api/riddles`**
+
+אם אחד מהשדות הבאים חסר:
+
+-   `name`
+-   `taskDescription`
+-   `correctAnswer`
+
+יש להחזיר:
+
+-   Status Code מסוג `400`.
+
+-   אובייקט JSON עם הודעת שגיאה:
+
+    ``` json
+    {
+      "error": "..."
+    }
+    ```
+
+אין לשמור את הנתונים במסד הנתונים במקרה כזה.
+
+**POST `/api/players`**
+
+אם השדה `name` חסר, יש להחזיר Status Code מסוג `400`.
+
+------------------------------------------------------------------------
+
+# תוצרים נדרשים בסיום חלק 3 (Deliverables)
+
+בסיום העבודה, הפרויקט צריך לעמוד בכל הדרישות הבאות:
+
+-   [ ] הסרתם את `json-server` מהפרויקט.
+-   [ ] שרת Express פועל באמצעות הפקודה `npm run server`.
+-   [ ] קיימות שתי תיקיות מרכזיות: `client/` ו־`server/`.
+-   [ ] כל ה־Routes שמופיעים בטבלת ה־API ממומשים.
+-   [ ] הקריאה והכתיבה של `db.json` מתבצעות באמצעות `fs.promises`.
+-   [ ] כאשר מנסים לגשת ל־ID שלא קיים, השרת מחזיר תשובת `404`.
+-   [ ] צד הלקוח עובד בדיוק כמו בחלק 2, אך כעת הוא מתקשר עם שרת Express
+    שכתבתם בעצמכם.
+
+------------------------------------------------------------------------
+
+**בהצלחה!** 🚀
